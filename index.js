@@ -42,7 +42,7 @@ app.post('/biodata', (req, res)=>{
         'INSERT INTO biodata (id, nama, nim, kelas) VALUES ($1, $2, $3, $4) RETURNING *',
         [id, nama, nim, kelas]
     )
-        .then(resurt => res.json(Result.rows[0]))
+        .then(result => res.json(Result.rows[0]))
         .catch(err => {
             console.error(err);
             res.status(500).json({ error: err.message });
