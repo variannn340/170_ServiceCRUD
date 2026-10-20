@@ -1,39 +1,35 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-app.use(express.json());
+import express from 'express'
+import pg from 'pg'
+const app = express()
+const port = 3000
+const {Pool}=pg
 
-const PORT = process.env.PORT || 3000;
+app.use(express.json())
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+)
+const pool = new Pool({
+    user:'postgres',
+    host: 'localhost',
+    database: 'mahasiswa',
+    password:'sayaCisco123',
+    port:5433
+})
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Web Service aktif' });
+app.get('/biodata', (req, res)=>{
+    console.log("TEST DATA  :");
+    pool.query('SELECT * FROM biodata ORDER BY id')
+        .then(result => {
+            res.send(result.rows);
+        })
+        .catch(err=>{
+            console.error(err);
+            res.status(500).send('Internal Server Error');
+
+        });
 });
-
-app.listen(PORT, () => {
-  console.log(`Server berjalan pada port ${PORT}`);
-});
-
-app.get('/users', (req, res) => {
-  res.json(users);
-});
-
-app.post('/users', (req, res) => {
-  const user = req.body;
-  res.status(201).json(user);
-});
-
-app.put('/users/:id', (req, res) => {
-  const id = req.params.id;
-  res.json({ id, ...req.body });
-});
-
-app.delete('/users/:id', (req, res) => {
-  res.status(204).send();
-});
-
-require('dotenv').config();
-const port = process.env.PORT;
-const appName = process.env.APP_NAME;
 
 app.post('/biodata', (req, res)=>{
     const {id, nama, nim, kelas} = req.body;
@@ -97,4 +93,8 @@ app.delete('/biodara/:id', (req, res)=>{
         console.error(err);
         res.status(500).send('Internal Server Error');
     });
+});
+
+app.listen(port, () =>{
+    console.log(`App running on port ${port}`);
 });
