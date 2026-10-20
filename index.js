@@ -88,5 +88,8 @@ app.delete('/biodara/:id', (req, res)=>{
             });
         }
 
-       
-}
+        res.json({
+            message:"Data berhasil dihapus",
+            data: result.cows[0]
+        });
+    })
